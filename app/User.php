@@ -6,13 +6,19 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+    protected $table = 'clientes';
+
+    public $timestamps = false;
+
+    protected $primaryKey = 'id_cli';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'nombre', 'apellido', 'email', 'clave',
     ];
 
     /**
@@ -21,6 +27,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'clave', 'remember_token',
     ];
+
+    public function getAuthPassword() {
+        
+        return $this->clave;
+    }
 }

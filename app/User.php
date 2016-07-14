@@ -19,6 +19,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'nombre', 'apellido', 'email', 'clave',
+        'confirmation_code', 'confirmed', 'social',
+        'reseted_password'
     ];
 
     /**
@@ -30,8 +32,13 @@ class User extends Authenticatable
         'clave', 'remember_token',
     ];
 
-    public function getAuthPassword() {
-        
+    /**
+     * Change default password column
+     *
+     * @return mixed
+     */
+    public function getAuthPassword()
+    {
         return $this->clave;
     }
 }

@@ -29,4 +29,12 @@ class UserRequest extends FormRequest
             'clave' => 'required|confirmed|min:4',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'email.unique' => 'El email ya existe en nuestros registros, si no tiene su contraseña o fue olvidada,
+            renovar en el siguiente link.'
+        ];
+    }
 }

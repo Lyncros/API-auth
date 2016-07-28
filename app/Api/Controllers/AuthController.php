@@ -21,6 +21,7 @@ class AuthController extends BaseController
      */
     function __construct(EmailService $email)
     {
+
         $this->email  = $email;
     }
 
@@ -30,7 +31,7 @@ class AuthController extends BaseController
      */
     public function me(Request $request)
     {
-        return JWTAuth::parseToken()->authenticate();
+      return JWTAuth::parseToken()->authenticate();
     }
 
     /**
@@ -42,16 +43,22 @@ class AuthController extends BaseController
         // grab credentials from the request
         $credentials = $request->only('email', 'password');
 
+        $token = JWTAuth::attempt($credentials);
+
+        $status = [];
+
         try {
             // attempt to verify the credentials and create a token for the user
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
+            if (!$token) {
+                return response()->json(['error' => 'Credenciales invalidas, vuelva a intentar.'], 401);
             }
 
-            $user = User::where('email', $request->email)->where('confirmed', 1);
+            $user = User::where('email', $request->email)->first();
 
-            if (!$user->count()) {
-                return response()->json(['error' => 'user_not_confirmed'], 401);
+            if (!$user->confirmed) {
+                $status = 'TEMPORAL_PASSWORD';
+            } else {
+              $status = 'OWNER_PASSWORD';
             }
 
         } catch (JWTException $e) {
@@ -60,7 +67,7 @@ class AuthController extends BaseController
         }
 
         // all good so return the token
-        return response()->json(compact('token'));
+        return response()->json(compact('token', 'status'));
     }
 
     /**
@@ -78,27 +85,33 @@ class AuthController extends BaseController
      */
     public function register(UserRequest $request)
     {
-        $confirmationCode = str_random(30);
+        $password = str_random(6);
+
+        $userExists = User::where('email', $request->email)->where('clave', '!=', '')->get();
+
+        if ($userExists->count()) {
+            return response()->json(['error' => 'El usuario ya existe'], 422);
+        }
 
         $newUser = [
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
             'email' => $request->email,
-            'clave' => bcrypt($request->clave),
-            'confirmation_code' => $confirmationCode
+            'telefono' => $request->telefono,
+            'clave' => bcrypt($password)
         ];
 
         $data = [
-            'confirmation_code' => $confirmationCode,
+            'password' => $password,
             'fullname' => $request->nombre . ' ' . $request->apellido
         ];
 
-        $user = User::create($newUser);
+        $user = User::updateOrCreate($newUser);
 
         if ($user) {
             $this->email->send($data, 'email.verify', 'Activación de su cuenta', $request);
 
-            return response()->json(['message' => 'User registred, please verify your email']);
+            return response()->json(['message' => 'Cliente registrado, por favor verifique su mail.']);
         }
 
         return response()->json(['message' => 'Internal error'], 500);
@@ -108,21 +121,20 @@ class AuthController extends BaseController
      * Confirm user if code is valid
      * @param $code
      */
-    public function confirm($code)
+    public function changePassword($id, Request $request)
     {
-        $user = User::where('confirmation_code', $code);
+        $user = User::find($id);
 
         if ($user->count()) {
-
             $user->update([
-                'confirmed' => 1,
-                'confirmation_code' => null,
+                'clave' => bcrypt($request->password),
+                'confirmed' => 1
             ]);
 
-            return response()->json(['message' => 'Activated', 'code' => 200]);
+            return response()->json(['message' => 'Clave actualizada', 'code' => 200]);
         }
 
-        return response()->json(['message' => 'Activation code not valid', 'code' => 404], 404);
+        return response()->json(['message' => 'User not found', 'code' => 404], 404);
     }
 
     /**
@@ -135,7 +147,6 @@ class AuthController extends BaseController
         $user = User::where('email', $request->email)->where('social', 0);
 
         if ($user->count()) {
-
             $newPassword = str_random(5);
 
             $user->update(['reseted_password' => 1, 'clave' => bcrypt($newPassword)]);

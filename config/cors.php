@@ -8,15 +8,14 @@ return [
      |
 
      | allowedOrigins, allowedHeaders and allowedMethods can be set to array('*')
-     | to accept any value.
+     | to accept any value, the allowed methods however have to be explicitly listed.
      |
      */
-    'supportsCredentials' => false,
+    'supportsCredentials' => true,
     'allowedOrigins' => ['*'],
     'allowedHeaders' => ['*'],
-    'allowedMethods' => ['*'],
+    'allowedMethods' => ['GET', 'POST', 'PUT',  'DELETE', 'OPTIONS'],
     'exposedHeaders' => [],
     'maxAge' => 0,
     'hosts' => ['*'],
 ];
-

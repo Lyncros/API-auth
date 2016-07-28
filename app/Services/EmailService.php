@@ -16,8 +16,9 @@ class EmailService
     {
         Mail::send($template, $data,
             function ($message) use ($request, $subject) {
-                $message->to($request->email, $request->nombre . ' ' . $request->apellido)
-                    ->subject($subject);
+                $message->from(env('CONTACT_FROM'))
+                        ->to($request->email, $request->nombre . ' ' . $request->apellido)
+                        ->subject($subject);
             });
     }
 }

@@ -22,4 +22,4 @@ Replicar el archivo .env.example con los accesos necesarios
 ### Cambios en base de datos
 *Aplicar los siguientes cambios en la tabla clientes*
 
-http://pastebin.com/CE8pbQNy
+http://pastebin.com/qa4RU8Kd

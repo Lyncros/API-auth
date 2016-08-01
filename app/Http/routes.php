@@ -17,7 +17,12 @@ $api->version('v1', function ($api) {
 
         $api->group(['middleware' => 'jwt.auth'], function ($api) {
 
+            $api->put('users/{id}', 'UsersController@update');
             $api->get('users/me', 'AuthController@me');
+            
+            $api->get('propiedades/favoritos', 'FavoritosPropiedadesController@index');
+
+            $api->post('propiedades/{id}/favoritos', 'FavoritosPropiedadesController@toggle');
 
             $api->get('validate_token', 'AuthController@validateToken');
         });

@@ -320,7 +320,7 @@
 
                                     <td class="content-block" style="margin: 0;padding: 0 0 20px;font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif;box-sizing: border-box;font-size: 14px;vertical-align: top;">
                                         <p>
-                                          Su password temporal es <b>{{$password}}</b> el sistema le pedira cambiarla.
+                                          Su password temporal es <b>{{$password}}</b> se recomienda modificarla.
                                         </p>
                                     </td>
                                 </tr>

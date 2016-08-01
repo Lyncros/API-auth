@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nombre', 'apellido', 'email', 'clave',
+        'id_cli', 'nombre', 'apellido', 'email', 'clave',
         'confirmation_code', 'confirmed', 'social',
         'reseted_password', 'telefono'
     ];
@@ -31,6 +31,16 @@ class User extends Authenticatable
     protected $hidden = [
         'clave', 'remember_token',
     ];
+
+    /**
+     * @param $password
+     */
+    public function setPasswordAttribute($password = null)
+    {
+        if (!is_null($password)) {
+            $this->attributes['password'] = bcrypt($password);
+        }
+    }
 
     /**
      * Change default password column

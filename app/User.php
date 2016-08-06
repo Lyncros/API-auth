@@ -38,7 +38,7 @@ class User extends Authenticatable
     public function setPasswordAttribute($password = null)
     {
         if (!is_null($password)) {
-            $this->attributes['password'] = bcrypt($password);
+            $this->attributes['clave'] = bcrypt($password);
         }
     }
 

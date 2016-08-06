@@ -15,14 +15,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class FavoritosPropiedadesController extends BaseController
 {
     protected $clientID;
-
-    public function __construct()
-    {
-        $this->clientID = JWTAuth::parseToken()->authenticate()->id_cli;
-    }
-
+    
     public function index(Propiedad $propiedad)
     {
+        $this->clientID = JWTAuth::parseToken()->authenticate()->id_cli;
+
         $lists = FavoritoPropiedad::where('id_cli', $this->clientID)->lists('id');
 
         $propiedades = $propiedad->listsByFavorite($lists);

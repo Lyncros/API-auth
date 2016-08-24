@@ -3,7 +3,8 @@
 $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', function ($api) {
-    $api->group(['namespace' => 'Api\Controllers','middleware' => '\Barryvdh\Cors\HandleCors::class'], function ($api) {
+    $api->group(['namespace' => 'Api\Controllers','middleware' => '\Barryvdh\Cors\HandleCors::class'],
+        function ($api) {
 
         $api->post('auth/{provider}', 'SocialController@getSocialAuth');
 

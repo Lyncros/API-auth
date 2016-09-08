@@ -56,8 +56,16 @@ class Propiedad extends Model
      */
     public function listsByFavorite($lists)
     {
-        $request = $this->client->request('GET', $this->apiUrl . self::PROP_URL . 'lists', ['json' => $lists->toArray()]);
+        $client = new \GuzzleHttp\Client();
 
-        return  collect(json_decode($request->getBody()));
+        $data = [
+            'json' => [
+                    'lists' => $lists->toArray()
+            ]
+        ];
+
+        $response = $client->request('GET', $this->apiUrl . self::PROP_URL . 'lists', $data);
+
+        return  collect(json_decode($response->getBody()));
     }
 }

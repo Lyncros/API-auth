@@ -5,7 +5,7 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) {
     $api->group(['namespace' => 'Api\Controllers','middleware' => '\Barryvdh\Cors\HandleCors::class'],
         function ($api) {
-
+    
         $api->post('auth/{provider}', 'SocialController@getSocialAuth');
 
         // Login route
@@ -24,6 +24,8 @@ $api->version('v1', function ($api) {
             $api->get('propiedades/favoritos', 'FavoritosPropiedadesController@index');
 
             $api->post('propiedades/{id}/favoritos', 'FavoritosPropiedadesController@toggle');
+
+            $api->get('propiedades/favoritos/count', 'FavoritosPropiedadesController@count');
 
             $api->get('validate_token', 'AuthController@validateToken');
         });

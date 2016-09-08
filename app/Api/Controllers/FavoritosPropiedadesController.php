@@ -10,21 +10,36 @@ namespace Api\Controllers;
 
 use App\FavoritoPropiedad;
 use App\Propiedad;
+use App\Repositories\FavoritoPropiedadRepository;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class FavoritosPropiedadesController extends BaseController
 {
     protected $clientID;
-    
-    public function index(Propiedad $propiedad)
+
+    public function __construct(FavoritoPropiedadRepository $repo)
+    {
+        $this->repo = $repo;
+    }
+
+    /**
+     * @param Propiedad $propiedad
+     * @return mixed
+     */
+    public function index()
     {
         $this->clientID = JWTAuth::parseToken()->authenticate()->id_cli;
 
-        $lists = FavoritoPropiedad::where('id_cli', $this->clientID)->lists('id');
-
-        $propiedades = $propiedad->listsByFavorite($lists);
+        $propiedades = $this->repo->getAll($this->clientID);
 
         return $propiedades;
+    }
+
+    public function count(Propiedad $propiedad)
+    {
+        $this->clientID = JWTAuth::parseToken()->authenticate()->id_cli;
+        
+        return $this->repo->count($this->clientID);
     }
 
     /**
@@ -33,6 +48,8 @@ class FavoritosPropiedadesController extends BaseController
      */
     public function toggle($id)
     {
+        $this->clientID = JWTAuth::parseToken()->authenticate()->id_cli;
+
         $fav = FavoritoPropiedad::where('id_cli', $this->clientID)->where('id_prop', $id)->where('favorite', 1);
 
         if ($fav->count()) {
@@ -48,7 +65,6 @@ class FavoritosPropiedadesController extends BaseController
         ]);
 
         return response()->json(['message' => 'OK']);
-
 
     }
 }

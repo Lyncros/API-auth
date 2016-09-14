@@ -64,6 +64,8 @@ class Propiedad extends Model
             ]
         ];
 
+        
+
         $response = $client->request('GET', $this->apiUrl . self::PROP_URL . 'lists', $data);
 
         return  collect(json_decode($response->getBody()));

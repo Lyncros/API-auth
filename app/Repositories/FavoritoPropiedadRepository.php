@@ -21,8 +21,11 @@ class FavoritoPropiedadRepository
      */
     public function getAll($clientID)
     {
-
         $lists = $this->model->where('id_cli', $clientID)->lists('id_prop');
+
+        if (!$lists->count()) {
+            return [];
+        }
 
         $propiedades = $this->propiedad->listsByFavorite($lists);
 
